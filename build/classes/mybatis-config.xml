@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration     
+    PUBLIC "-//mybatis.org//DTD Config 3.0//EN"     
+    "http://mybatis.org/dtd/mybatis-3-config.dtd"> 
+    <configuration>
+   
+	      <typeAliases>  <!--typeAliases这个属性写在最前面  -->  
+	   		 <!--给实体类起一个别名  -->  
+	    	 <typeAlias alias="Czy" type="com.learn.po.Czy"/>
+	    	 <typeAlias alias="Xxm" type="com.learn.po.Xxm"/>
+	    	 <typeAlias alias="Gzzy" type="com.learn.po.Gzzy"/>
+	    	 <typeAlias alias="Csb" type="com.learn.po.Csb"/>
+	    	 <typeAlias alias="Xyxx" type="com.learn.po.Xyxx"/>
+	    	 <typeAlias alias="Bkzy" type="com.learn.po.Bkzy"/>
+	    	 <typeAlias alias="XYZYPZB" type="com.learn.po.XYZYPZB"/>
+	    	 <typeAlias alias="Zypz" type="com.learn.po.Zypz"/>
+	    	 <typeAlias alias="Zymc" type="com.learn.po.Zymc"/>
+	    	 <typeAlias alias="BKTBCXCY" type="com.learn.po.BKTBCXCY"/>
+	    	 <typeAlias alias="BKTBJIAOSHI" type="com.learn.po.BKTBJIAOSHI"/>
+	    	 <typeAlias alias="BKTBJIUYE" type="com.learn.po.BKTBJIUYE"/>
+	    	 <typeAlias alias="BKTBJXGG" type="com.learn.po.BKTBJXGG"/>
+	    	 <typeAlias alias="BKTBJXTJ" type="com.learn.po.BKTBJXTJ"/>
+	    	 <typeAlias alias="BKTBJYJBXX" type="com.learn.po.BKTBJYJBXX"/>
+	    	 <typeAlias alias="BKTBPYFA" type="com.learn.po.BKTBPYFA"/>
+	    	 <typeAlias alias="BKTBPYXG" type="com.learn.po.BKTBPYXG"/>
+	    	 <typeAlias alias="BKTBSJJX" type="com.learn.po.BKTBSJJX"/>
+	    	 <typeAlias alias="BKTBSYB" type="com.learn.po.BKTBSYB"/>
+	    	 <typeAlias alias="BKTBZYXYL" type="com.learn.po.BKTBZYXYL"/>
+	    	 <typeAlias alias="BKTBJSSZSP" type="com.learn.po.BKTBJSSZSP"/>
+	    	 <typeAlias alias="BKTBZLBZ" type="com.learn.po.BKTBZLBZ"/>
+	    	 
+	    	 <typeAlias alias="ZKTBCXCY" type="com.learn.po.ZKTBCXCY"/>
+	    	 <typeAlias alias="ZKTBJIAOSHI" type="com.learn.po.ZKTBJIAOSHI"/>
+	    	 <typeAlias alias="ZKTBJIUYE" type="com.learn.po.ZKTBJIUYE"/>
+	    	 <typeAlias alias="ZKTBJXGG" type="com.learn.po.ZKTBJXGG"/>
+	    	 <typeAlias alias="ZKTBJXTJ" type="com.learn.po.ZKTBJXTJ"/>
+	    	 <typeAlias alias="ZKTBJYJBXX" type="com.learn.po.ZKTBJYJBXX"/>
+	    	 <typeAlias alias="ZKTBPYFA" type="com.learn.po.ZKTBPYFA"/>
+	    	 <typeAlias alias="ZKTBPYXG" type="com.learn.po.ZKTBPYXG"/>
+	    	 <typeAlias alias="ZKTBSJJX" type="com.learn.po.ZKTBSJJX"/>
+	    	 <typeAlias alias="ZKTBSYB" type="com.learn.po.ZKTBSYB"/>
+	    	 <typeAlias alias="ZKTBZYXYL" type="com.learn.po.ZKTBZYXYL"/>
+	    	 <typeAlias alias="ZKTBJSSZSP" type="com.learn.po.ZKTBJSSZSP"/>
+	    	 <typeAlias alias="ZKTBZLBZ" type="com.learn.po.ZKTBZLBZ"/>
+	    	 <typeAlias alias="Hydm" type="com.learn.po.Hydm"/>
+	    	 <typeAlias alias="XYXXB" type="com.learn.po.XYXXB"/>
+	    </typeAliases>
+	   
+    <!--数据源配置  用数据库 -->  
+	    <environments default="development">  
+	        <environment id="development">  
+	            <transactionManager type="JDBC">
+	            	<property name="autoCommit" value="false"/>
+	            </transactionManager>
+	            <dataSource type="POOLED">  <!-- 这是 JDBC 连接对象的数据源连接池的实现,用来避免创建新的连接实例  时必要的初始连接和认证时间。这是一种当前 Web 应用程序用来快速响应请求很流行的方 法。 -->
+<!-- 	                <property name="driver" value="com.mysql.jdbc.Driver"/> -->
+<!--         			<property name="url" value="jdbc:mysql://localhost:3306/test"/> -->
+<!--         			<property name="username" value="root"/> -->
+<!--         			<property name="password" value="mysql"/> -->
+        			<property name="driver" value="oracle.jdbc.driver.OracleDriver"/>
+        			<property name="url" value="jdbc:oracle:thin:@202.200.112.118:1521:orclsxuniv"/>
+        			<property name="username" value="sxuniv"/>
+        			<property name="password" value="sxuniv"/>
+	            </dataSource>  
+	        </environment>  
+	    </environments>  
+	    <mappers>  
+	        <!--roleMapper.xml装载进来  同等于把“dao”的实现装载进来 -->  
+	        <mapper resource="com\learn\mapper\UnivMapper.xml" />
+	    </mappers>  
+</configuration> 

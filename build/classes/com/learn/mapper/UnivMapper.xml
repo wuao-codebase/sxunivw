@@ -1,0 +1,903 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+   
+  <mapper namespace="com.learn.mapper.UnivMapper">
+  
+  <select id="getHYDMYIJI"  resultType="Hydm">
+  select * from HYDMYIJI     
+  </select>
+   <select id="getHYDMERJI"  resultType="Hydm">
+  select * from HYDMERJI  where HYYIJIDM  = #{HYYIJIDM}
+  </select>
+  <select id="getXYXXB"  resultType="XYXXB">
+SELECT XYXXB.*,case XYXXB.XB when '1' then '男' else '女' end as XBG,HYDMYIJI.HYYIJIDMMC||'-'||HYDMERJI.HYERJIDMMC as cshy FROM XYXXB inner JOIN HYDMYIJI on XYXXB.HYYIJIDM=HYDMYIJI.HYYIJIDM inner join HYDMERJI on XYXXB.HYERJIDM=HYDMERJI.HYERJIDM   
+   where XXDM = #{XXDM} and XYDM = #{XYDM} and  ZYIDLSH = #{ZYIDLSH}
+  </select>
+  <insert id="insertXYXXB" parameterType="XYXXB">
+	insert into XYXXB(ID,XM,XB,HYYIJIDM,HYERJIDM,XGZDW,RXNF,XYDM,XXDM,ZYIDLSH) 
+	values (#{ID},#{XM},#{XB},#{HYYIJIDM},#{HYERJIDM},#{XGZDW},#{RXNF},#{XYDM},#{XXDM},#{ZYIDLSH})
+</insert>
+  <delete id="deleteXYXXB" parameterType="XYXXB" >
+  delete from XYXXB  where ID = #{ID} 
+  </delete>
+  <update id="upXYXXB" parameterType="XYXXB">
+	update XYXXB
+    set XM = #{XM},
+      XB = #{XB},
+      HYYIJIDM = #{HYYIJIDM},
+      HYERJIDM = #{HYERJIDM},
+      XGZDW = #{XGZDW},
+      RXNF = #{RXNF}
+     WHERE ID = #{ID}
+</update>
+  
+  <select id="getbktemp"  parameterType="java.lang.String" resultType="int">
+  select count(*) from BKTBCXCY  where  BKTBCXCY.XXDM = #{XXDM}   
+  </select>
+     <select id="getzktemp"  parameterType="java.lang.String" resultType="int">
+  select count(*) from ZKTBCXCY  where  ZKTBCXCY.XXDM = #{XXDM} 
+  </select>
+<!--   未填报专业查询 -->
+  <select id="getbkunreport"   resultType="XYZYPZB">
+  select * from XYZYPZB Left JOIN BKTBCXCY 
+ ON XYZYPZB.XXDM=  BKTBCXCY.XXDM and XYZYPZB.XYDM=BKTBCXCY.XYDM and XYZYPZB.ZYIDXLSH=BKTBCXCY.ZYIDLSH  and BKTBCXCY.TBYEAR=#{arg1}
+ where BKTBCXCY.ZYIDLSH is null and XYZYPZB.ZYLB=1 and XYZYPZB.XXDM = #{arg0} ORDER BY XYZYPZB.XYDM
+  </select>
+  
+    <select id="getzkunreport"   resultType="XYZYPZB">
+ select * from XYZYPZB Left JOIN ZKTBCXCY 
+ON XYZYPZB.XXDM=  ZKTBCXCY.XXDM and XYZYPZB.XYDM=ZKTBCXCY.XYDM and XYZYPZB.ZYIDXLSH=ZKTBCXCY.ZYIDLSH and ZKTBCXCY.TBYEAR=#{arg1}
+ where ZKTBCXCY.ZYIDLSH  is null and XYZYPZB.ZYLB=2 and XYZYPZB.XXDM = #{arg0}  ORDER BY XYZYPZB.XYDM
+  </select>
+
+
+  
+<!--   本科专业信息填报 -->
+<insert id="insertBKTBJYJBXX" parameterType="BKTBJYJBXX">
+	insert into BKTBJYJBXX(XXDM,ZYBXRQ,SSDBZ,BSDBZ,SXYLZYBZ,GCRZBZ,XYDM,BKZYIDLSH,BKTBLSH,TBYEAR,YSZYLX,XWSYQ) 
+	values (#{XXDM},#{ZYBXRQ},#{SSDBZ},#{BSDBZ},#{SXYLZYBZ},#{GCRZBZ},#{XYDM},#{BKZYIDLSH},#{BKTBLSH},#{TBYEAR},#{YSZYLX},#{XWSYQ})
+</insert>
+<delete id="deleteBKTBJYJBXX" parameterType="BKTBJYJBXX">
+	  	delete from BKTBJYJBXX where XXDM= #{XXDM} and XYDM= #{XYDM} and BKZYIDLSH= #{BKZYIDLSH} and TBYEAR= #{TBYEAR}
+</delete>
+<delete id="deleteBKTBJYJBXXO" parameterType="BKTBJYJBXX">
+	  	delete from BKTBJYJBXX where XXDM= #{XXDM} and XYDM= #{XYDM} and BKZYIDLSH= #{BKZYIDLSH}
+</delete>
+<delete id="deleteXYBKTBJYJBXX" parameterType="java.lang.String">
+	  	delete from BKTBJYJBXX where XYDM= #{value}
+</delete>
+ <select id="getBKTBJYJBXX" parameterType="BKTBJYJBXX" resultType="BKTBJYJBXX">
+	  SELECT * FROM BKTBJYJBXX WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and BKZYIDLSH= #{BKZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+  <select id="getBKTBJYJBXXMAP" parameterType="BKTBJYJBXX" resultType="java.util.HashMap">
+	  SELECT * FROM BKTBJYJBXX WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and BKZYIDLSH= #{BKZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+ <update id="upBKTBJYJBXX" parameterType="BKTBJYJBXX">
+	update BKTBJYJBXX
+    set ZYBXRQ = #{ZYBXRQ},
+      SSDBZ = #{SSDBZ},
+      BSDBZ = #{BSDBZ},
+      SXYLZYBZ = #{SXYLZYBZ},
+      GCRZBZ = #{GCRZBZ},
+      BKTBLSH = #{BKTBLSH},
+      YSZYLX = #{YSZYLX},
+      XWSYQ = #{XWSYQ}
+     WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and BKZYIDLSH= #{BKZYIDLSH} and TBYEAR= #{TBYEAR}
+</update>
+	  
+
+<insert id="insertBKTBSYB" parameterType="BKTBSYB">
+	insert into BKTBSYB(XXDM, XYDM, BKZYIDLSH, BKTBLSH, ZXSRS, JHZSRS,SJZSRS,TBYEAR,ZSZGF,ZSZDF,ZSPJF,ZSZGWC,ZSZDWC,ZSPJWC,ZSZSRS,JNZRS,GATZRS,LXSZRS,SJLQS,ZZZSRS,ZTCSRS) 
+	values (#{XXDM},#{XYDM},#{BKZYIDLSH},#{BKTBLSH},#{ZXSRS},#{JHZSRS},#{SJZSRS},#{TBYEAR},#{ZSZGF},#{ZSZDF},#{ZSPJF},#{ZSZGWC},#{ZSZDWC},#{ZSPJWC},#{ZSZSRS},#{JNZRS},#{GATZRS},#{LXSZRS},#{SJLQS},#{ZZZSRS},#{ZTCSRS})
+</insert>
+<delete id="deleteXYBKTBSYB" parameterType="java.lang.String">
+	  	delete from BKTBSYB where  XYDM= #{XYDM} 
+</delete>
+<delete id="deleteBKTBSYB" parameterType="BKTBSYB">
+	  	delete from BKTBSYB where XXDM= #{XXDM} and XYDM= #{XYDM} and BKZYIDLSH= #{BKZYIDLSH} and TBYEAR= #{TBYEAR}
+</delete>
+<delete id="deleteBKTBSYBO" parameterType="BKTBSYB">
+	  	delete from BKTBSYB where XXDM= #{XXDM} and XYDM= #{XYDM} and BKZYIDLSH= #{BKZYIDLSH}
+</delete>
+<select id="getBKTBSYB" parameterType="BKTBSYB" resultType="BKTBSYB">
+	  SELECT * FROM BKTBSYB WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and BKZYIDLSH= #{BKZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+ <select id="getBKTBSYBMAP" parameterType="BKTBSYB" resultType="java.util.HashMap">
+	  SELECT * FROM BKTBSYB WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and BKZYIDLSH= #{BKZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+  <update id="upBKTBSYB" parameterType="BKTBSYB">
+	update BKTBSYB
+    set 
+      BKTBLSH = #{BKTBLSH},
+      ZXSRS = #{ZXSRS},
+      JHZSRS = #{JHZSRS},
+      SJZSRS = #{SJZSRS},
+      ZSZGF = #{ZSZGF},
+      ZSZDF = #{ZSZDF},
+      ZSPJF = #{ZSPJF},
+      ZSZGWC = #{ZSZGWC},
+      ZSZDWC = #{ZSZDWC},
+      ZSPJWC = #{ZSPJWC},
+      ZSZSRS = #{ZSZSRS},
+      JNZRS = #{JNZRS},
+      GATZRS = #{GATZRS},
+      LXSZRS = #{LXSZRS},
+      SJLQS = #{SJLQS},
+      ZZZSRS = #{ZZZSRS},
+      ZTCSRS = #{ZTCSRS}
+     WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and BKZYIDLSH= #{BKZYIDLSH} and TBYEAR= #{TBYEAR}
+</update>
+
+<insert id="insertBKTBPYXG" parameterType="BKTBPYXG">
+	insert into BKTBPYXG(XXDM, XYDM, BKZYIDLSH, BKTBLSH, TBYEAR, GJXKJSCJRS,SXXKJSCJRS,GJXKJSDJS,SXXKJSDJS,SNGJHLWDJS,SNSXHLWDJS,GJDCS,SJDCS,LWS,ZLS,SJTGL,LJTGL,SJJLS,JXJS,XJXSGBRS,SJXKJSCJRS,SJXKJSHJRS,WTJSHJRS,GJHYRS,XSRDJJFZ,XSYBDYS,XSZSDYS,XSCJGYHDRS,JCXYRS) 
+	values (#{XXDM},#{XYDM},#{BKZYIDLSH},#{BKTBLSH},#{TBYEAR},#{GJXKJSCJRS},#{SXXKJSCJRS},#{GJXKJSDJS},#{SXXKJSDJS},#{SNGJHLWDJS},#{SNSXHLWDJS},#{GJDCS},#{SJDCS},#{LWS},#{ZLS},#{SJTGL},#{LJTGL},#{SJJLS},#{JXJS},#{XJXSGBRS},#{SJXKJSCJRS},#{SJXKJSHJRS},#{WTJSHJRS},#{GJHYRS},#{XSRDJJFZ},#{XSYBDYS},#{XSZSDYS},#{XSCJGYHDRS},#{JCXYRS})
+</insert>
+<delete id="deleteXYBKTBPYXG" parameterType="java.lang.String">
+	  	delete from BKTBPYXG where  XYDM= #{XYDM} 
+</delete>
+<delete id="deleteBKTBPYXG" parameterType="BKTBPYXG">
+	  	delete from BKTBPYXG where XXDM= #{XXDM} and XYDM= #{XYDM} and BKZYIDLSH= #{BKZYIDLSH} and TBYEAR= #{TBYEAR}
+</delete>
+<delete id="deleteBKTBPYXGO" parameterType="BKTBPYXG">
+	  	delete from BKTBPYXG where XXDM= #{XXDM} and XYDM= #{XYDM} and BKZYIDLSH= #{BKZYIDLSH}
+</delete>
+<select id="getBKTBPYXG" parameterType="BKTBPYXG" resultType="BKTBPYXG">
+	  SELECT * FROM BKTBPYXG WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and BKZYIDLSH= #{BKZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+ <select id="getBKTBPYXGMAP" parameterType="BKTBPYXG" resultType="java.util.HashMap">
+	  SELECT * FROM BKTBPYXG WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and BKZYIDLSH= #{BKZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+   <update id="upBKTBPYXG" parameterType="BKTBPYXG">
+	 update BKTBPYXG
+    set 
+      BKTBLSH = #{BKTBLSH},
+      GJXKJSCJRS = #{GJXKJSCJRS},
+      SXXKJSCJRS = #{SXXKJSCJRS},
+      GJXKJSDJS = #{GJXKJSDJS},
+      SNGJHLWDJS = #{SNGJHLWDJS},
+      GJDCS = #{GJDCS},
+      SJDCS = #{SJDCS},
+      LWS = #{LWS},
+      ZLS = #{ZLS},
+      SJTGL = #{SJTGL},
+      LJTGL = #{LJTGL},
+      SJJLS = #{SJJLS},
+      JXJS = #{JXJS},
+      SXXKJSDJS = #{SXXKJSDJS},
+      SNSXHLWDJS = #{SNSXHLWDJS},
+      XJXSGBRS = #{XJXSGBRS},
+      SJXKJSCJRS = #{SJXKJSCJRS},
+      SJXKJSHJRS = #{SJXKJSHJRS},
+      WTJSHJRS = #{WTJSHJRS},
+      GJHYRS = #{GJHYRS},
+      XSRDJJFZ = #{XSRDJJFZ},
+      XSYBDYS = #{XSYBDYS},
+      XSZSDYS = #{XSZSDYS},
+      XSCJGYHDRS = #{XSCJGYHDRS},
+      JCXYRS=#{JCXYRS}
+     WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and BKZYIDLSH= #{BKZYIDLSH} and TBYEAR= #{TBYEAR}
+</update>
+
+<insert id="insertBKTBJIUYE" parameterType="BKTBJIUYE">
+	insert into BKTBJIUYE(XXDM, XYDM, BKZYLSH, BKTBLSH, TBYEAR, BYSCCJYL,BYSMYD,ZZCYRS) 
+	values (#{XXDM},#{XYDM},#{BKZYLSH}, #{BKTBLSH}, #{TBYEAR}, #{BYSCCJYL}, #{BYSMYD}, #{ZZCYRS})
+</insert>
+<delete id="deleteXYBKTBJIUYE" parameterType="java.lang.String">
+	  	delete from BKTBJIUYE where  XYDM= #{XYDM} 
+</delete>
+<delete id="deleteBKTBJIUYE" parameterType="BKTBJIUYE">
+	  	delete from BKTBJIUYE where XXDM= #{XXDM} and XYDM= #{XYDM} and BKZYLSH= #{BKZYLSH} and TBYEAR= #{TBYEAR}
+</delete>
+<delete id="deleteBKTBJIUYEO" parameterType="BKTBJIUYE">
+	  	delete from BKTBJIUYE where XXDM= #{XXDM} and XYDM= #{XYDM} and BKZYLSH= #{BKZYLSH}
+</delete>
+<select id="getBKTBJIUYE" parameterType="BKTBJIUYE" resultType="BKTBJIUYE">
+	  SELECT * FROM BKTBJIUYE WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and BKZYLSH= #{BKZYLSH} and TBYEAR= #{TBYEAR}
+ </select>
+ <select id="getBKTBJIUYEMAP" parameterType="BKTBJIUYE" resultType="java.util.HashMap">
+	  SELECT * FROM BKTBJIUYE WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and BKZYLSH= #{BKZYLSH} and TBYEAR= #{TBYEAR}
+ </select>
+
+<insert id="insertBKTBZYXYL" parameterType="BKTBZYXYL">
+	insert into BKTBZYXYL(XXDM, XYDM, BKZYIDLSH, BKZYTBLSH, TBYEAR, ZRRS,ZCRS,YJSLQRS,JSLXSRS,SCLXSRS) 
+	values (#{XXDM},#{XYDM},#{BKZYIDLSH}, #{BKZYTBLSH}, #{TBYEAR}, #{ZRRS}, #{ZCRS}, #{YJSLQRS}, #{JSLXSRS}, #{SCLXSRS})
+</insert>
+<delete id="deleteXYBKTBZYXYL" parameterType="java.lang.String">
+	  	delete from BKTBZYXYL where  XYDM= #{XYDM} 
+</delete>
+<delete id="deleteBKTBZYXYL" parameterType="BKTBZYXYL">
+	  	delete from BKTBZYXYL where XXDM= #{XXDM} and XYDM= #{XYDM} and BKZYIDLSH= #{BKZYIDLSH} and TBYEAR= #{TBYEAR}
+</delete>
+<delete id="deleteBKTBZYXYLO" parameterType="BKTBZYXYL">
+	  	delete from BKTBZYXYL where XXDM= #{XXDM} and XYDM= #{XYDM} and BKZYIDLSH= #{BKZYIDLSH} 
+</delete>
+<select id="getBKTBZYXYL" parameterType="BKTBZYXYL" resultType="BKTBZYXYL">
+	  SELECT * FROM BKTBZYXYL WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and BKZYIDLSH= #{BKZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+ <select id="getBKTBZYXYLMAP" parameterType="BKTBZYXYL" resultType="java.util.HashMap">
+	  SELECT * FROM BKTBZYXYL WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and BKZYIDLSH= #{BKZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+
+<insert id="insertBKTBPYFA" parameterType="BKTBPYFA">
+	insert into BKTBPYFA(XXDM, XYDM, BKZYIDLSH, BKTBIDLSH, TBYEAR, BYXFZS,LLXFZS,XXKXFZS,PYFAURL,SJKXFZS,CXXFZS,PYFAXDNF) 
+	values (#{XXDM},#{XYDM},#{BKZYIDLSH}, #{BKTBIDLSH}, #{TBYEAR}, #{BYXFZS}, #{LLXFZS}, #{XXKXFZS}, #{PYFAURL}, #{SJKXFZS}, #{CXXFZS}, #{PYFAXDNF})
+</insert>
+<delete id="deleteXYBKTBPYFA" parameterType="java.lang.String">
+	  	delete from BKTBPYFA where  XYDM= #{XYDM} 
+</delete>
+<delete id="deleteBKTBPYFA" parameterType="BKTBPYFA">
+	  	delete from BKTBPYFA where XXDM= #{XXDM} and XYDM= #{XYDM} and BKZYIDLSH= #{BKZYIDLSH} and TBYEAR= #{TBYEAR}
+</delete>
+<delete id="deleteBKTBPYFAO" parameterType="BKTBPYFA">
+	  	delete from BKTBPYFA where XXDM= #{XXDM} and XYDM= #{XYDM} and BKZYIDLSH= #{BKZYIDLSH}
+</delete>
+<select id="getBKTBPYFA" parameterType="BKTBPYFA" resultType="BKTBPYFA">
+	  SELECT * FROM BKTBPYFA WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and BKZYIDLSH= #{BKZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+ <select id="getBKTBPYFAMAP" parameterType="BKTBPYFA" resultType="java.util.HashMap">
+	  SELECT * FROM BKTBPYFA WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and BKZYIDLSH= #{BKZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+ <update id="upBKTBPYFA" parameterType="BKTBPYFA" >
+    update BKTBPYFA
+    set
+      BKTBIDLSH = #{BKTBIDLSH},
+      TBYEAR = #{TBYEAR},
+      BYXFZS = #{BYXFZS},
+      LLXFZS = #{LLXFZS},
+      XXKXFZS = #{XXKXFZS},
+      PYFAURL = #{PYFAURL},
+      SJKXFZS = #{SJKXFZS},
+      CXXFZS = #{CXXFZS},
+      PYFAXDNF = #{PYFAXDNF}
+     WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and BKZYIDLSH= #{BKZYIDLSH} and TBYEAR= #{TBYEAR}
+  </update>
+
+<!-- BKZYIDLSH=TBLSH -->
+<insert id="insertBKTBJIAOSHI" parameterType="BKTBJIAOSHI">
+	insert into BKTBJIAOSHI(XXDM, XYDM, BKTBIDLSH, BKZYIDLSH, JSZS, ZGJSZS,FGJSZS,WPJSZS,YOUNGJSZS, MEDIANJSZS,BSJSZS,SYJSZS,TBYEAR) 
+	values (#{XXDM},#{XYDM},#{BKTBIDLSH}, #{BKZYIDLSH}, #{JSZS}, #{ZGJSZS}, #{FGJSZS}, #{WPJSZS}, #{YOUNGJSZS}, #{MEDIANJSZS}, #{BSJSZS}, #{SYJSZS}, #{TBYEAR})
+</insert>
+<delete id="deleteXYBKTBJIAOSHI" parameterType="java.lang.String">
+	  	delete from BKTBJIAOSHI where  XYDM= #{XYDM} 
+</delete>
+<delete id="deleteBKTBJIAOSHI" parameterType="BKTBJIAOSHI">
+	  	delete from BKTBJIAOSHI where XXDM= #{XXDM} and XYDM= #{XYDM} and BKZYIDLSH= #{BKZYIDLSH} and TBYEAR= #{TBYEAR}
+</delete>
+<delete id="deleteBKTBJIAOSHIO" parameterType="BKTBJIAOSHI">
+	  	delete from BKTBJIAOSHI where XXDM= #{XXDM} and XYDM= #{XYDM} and BKZYIDLSH= #{BKZYIDLSH} 
+</delete>
+<select id="getBKTBJIAOSHI" parameterType="BKTBJIAOSHI" resultType="BKTBJIAOSHI">
+	  SELECT * FROM BKTBJIAOSHI WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and BKZYIDLSH= #{BKZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+ <select id="getBKTBJIAOSHIMAP" parameterType="BKTBJIAOSHI" resultType="java.util.HashMap">
+	  SELECT * FROM BKTBJIAOSHI WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and BKZYIDLSH= #{BKZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+
+<insert id="insertBKTBJXTJ" parameterType="BKTBJXTJ">
+	insert into BKTBJXTJ(XXDM, XYDM, BKZYIDLSH, BKZYTBLSH, TBYEAR, ZSBF,ZRJF,DNSBF,DNRJF, ZYTUSHU,DNJXJF) 
+	values (#{XXDM},#{XYDM},#{BKZYIDLSH}, #{BKZYTBLSH}, #{TBYEAR}, #{ZSBF}, #{ZRJF}, #{DNSBF}, #{DNRJF}, #{ZYTUSHU}, #{DNJXJF})
+</insert>
+<delete id="deleteXYBKTBJXTJ" parameterType="java.lang.String">
+	  	delete from BKTBJXTJ where  XYDM= #{XYDM} 
+</delete>
+<delete id="deleteBKTBJXTJ" parameterType="BKTBJXTJ">
+	  	delete from BKTBJXTJ where XXDM= #{XXDM} and XYDM= #{XYDM} and BKZYIDLSH= #{BKZYIDLSH} and TBYEAR= #{TBYEAR}
+</delete>
+<delete id="deleteBKTBJXTJO" parameterType="BKTBJXTJ">
+	  	delete from BKTBJXTJ where XXDM= #{XXDM} and XYDM= #{XYDM} and BKZYIDLSH= #{BKZYIDLSH}
+</delete>
+<select id="getBKTBJXTJ" parameterType="BKTBJXTJ" resultType="BKTBJXTJ">
+	  SELECT * FROM BKTBJXTJ WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and BKZYIDLSH= #{BKZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+ <select id="getBKTBJXTJMAP" parameterType="BKTBJXTJ" resultType="java.util.HashMap">
+	  SELECT * FROM BKTBJXTJ WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and BKZYIDLSH= #{BKZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+
+<insert id="insertBKTBSJJX" parameterType="BKTBSJJX">
+	insert into BKTBSJJX(XXDM, XYDM, BKZYTBLSH, ZYIDLSH, TBYEAR, SJJXJF,XNSXJD,XWSXJD,BYLWBL, GJJJSZXS,SJJXSXS,GJJXNZSS,SJXNZSS,GJJSYSS,SJSYSS,XQLHPYXYS) 
+	values (#{XXDM},#{XYDM},#{BKZYTBLSH}, #{ZYIDLSH}, #{TBYEAR}, #{SJJXJF}, #{XNSXJD}, #{XWSXJD}, #{BYLWBL}, #{GJJJSZXS}, #{SJJXSXS}, #{GJJXNZSS}, #{SJXNZSS}, #{GJJSYSS}, #{SJSYSS}, #{XQLHPYXYS})
+</insert>
+<delete id="deleteXYBKTBSJJX" parameterType="java.lang.String">
+	  	delete from BKTBSJJX where  XYDM= #{XYDM} 
+</delete>
+<delete id="deleteBKTBSJJX" parameterType="BKTBSJJX">
+	  	delete from BKTBSJJX where XXDM= #{XXDM} and XYDM= #{XYDM} and ZYIDLSH= #{ZYIDLSH} and TBYEAR= #{TBYEAR}
+</delete>
+<delete id="deleteBKTBSJJXO" parameterType="BKTBSJJX">
+	  	delete from BKTBSJJX where XXDM= #{XXDM} and XYDM= #{XYDM} and ZYIDLSH= #{ZYIDLSH}
+</delete>
+<select id="getBKTBSJJX" parameterType="BKTBSJJX" resultType="BKTBSJJX">
+	  SELECT * FROM BKTBSJJX WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and ZYIDLSH= #{ZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+ <select id="getBKTBSJJXMAP" parameterType="BKTBSJJX" resultType="java.util.HashMap">
+	  SELECT * FROM BKTBSJJX WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and ZYIDLSH= #{ZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+
+<insert id="insertBKTBCXCY" parameterType="BKTBCXCY">
+	insert into BKTBCXCY(XXDM, XYDM, ZYIDLSH, BKTBLSH, TBYEAR, TXSZBZ,CYKCBZ,CYZDJSRS,GZRS) 
+	values (#{XXDM},#{XYDM},#{ZYIDLSH}, #{BKTBLSH}, #{TBYEAR}, #{TXSZBZ}, #{CYKCBZ}, #{CYZDJSRS}, #{GZRS})
+</insert>
+<delete id="deleteXYBKTBCXCY" parameterType="java.lang.String">
+	  	delete from BKTBCXCY where  XYDM= #{XYDM} 
+</delete>
+<delete id="deleteBKTBCXCY" parameterType="BKTBCXCY">
+	  	delete from BKTBCXCY where XXDM= #{XXDM} and XYDM= #{XYDM} and ZYIDLSH= #{ZYIDLSH} and TBYEAR= #{TBYEAR}
+</delete>
+<delete id="deleteBKTBCXCYO" parameterType="BKTBCXCY">
+	  	delete from BKTBCXCY where XXDM= #{XXDM} and XYDM= #{XYDM} and ZYIDLSH= #{ZYIDLSH} 
+</delete>
+<select id="getBKTBCXCY" parameterType="BKTBCXCY" resultType="BKTBCXCY">
+	  SELECT * FROM BKTBCXCY WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and ZYIDLSH= #{ZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+ <select id="getBKTBCXCYMAP" parameterType="BKTBCXCY" resultType="java.util.HashMap">
+	  SELECT * FROM BKTBCXCY WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and ZYIDLSH= #{ZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+
+<insert id="insertBKTBJXGG" parameterType="BKTBJXGG">
+	insert into BKTBJXGG(XXDM, XYDM, BKTBIDLSH, ZYIDLSH, DNSJJXYJS, DNSJJPKCS,DNGJJJPKCS,DNSJJXCGJS,SJRCPYSYCS, DNJGLWS,DNGJJJCS,DNSJYXJCS,DNQTJCS,TBYEAR,DNGJJJXCGJ,DNSJJJXCGJ) 
+	values (#{XXDM},#{XYDM},#{BKTBIDLSH}, #{ZYIDLSH}, #{DNSJJXYJS}, #{DNSJJPKCS}, #{DNGJJJPKCS}, #{DNSJJXCGJS}, #{SJRCPYSYCS}, #{DNJGLWS}, #{DNGJJJCS}, #{DNSJYXJCS}, #{DNQTJCS}, #{TBYEAR}, #{DNGJJJXCGJ}, #{DNSJJJXCGJ})
+</insert>
+<delete id="deleteXYBKTBJXGG" parameterType="java.lang.String">
+	  	delete from BKTBJXGG where  XYDM= #{XYDM} 
+</delete>
+<delete id="deleteBKTBJXGG" parameterType="BKTBJXGG">
+	  	delete from BKTBJXGG where XXDM= #{XXDM} and XYDM= #{XYDM} and ZYIDLSH= #{ZYIDLSH} and TBYEAR= #{TBYEAR}
+</delete>
+<delete id="deleteBKTBJXGGO" parameterType="BKTBJXGG">
+	  	delete from BKTBJXGG where XXDM= #{XXDM} and XYDM= #{XYDM} and ZYIDLSH= #{ZYIDLSH} 
+</delete>
+<select id="getBKTBJXGG" parameterType="BKTBJXGG" resultType="BKTBJXGG">
+	  SELECT * FROM BKTBJXGG WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and ZYIDLSH= #{ZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+ <select id="getBKTBJXGGMAP" parameterType="BKTBJXGG" resultType="java.util.HashMap">
+	  SELECT * FROM BKTBJXGG WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and ZYIDLSH= #{ZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+
+<insert id="insertBKTBJSSZSP" parameterType="BKTBJSSZSP">
+	insert into BKTBJSSZSP(XXDM, XYDM, BKTBIDLSH, ZYIDLSH, TBYEAR, DNSKZGJSS,DNGJJXJS,DNSJJXJS,DNGJKJJS, DNSJKJJS,DNGJJXMS,DNSBXMS,DNZXDK,DNHXDK,GJJJXTDS,GJJKYTDS,SJJXTDS,SJKYTDS,DNSCI,DNSSCI,DNCSSCI,DNEI,DNCSCD,DNISTP,GSPJSS,DNCGFXS,DNZLS,DNRJZZQS) 
+	values (#{XXDM},#{XYDM},#{BKTBIDLSH}, #{ZYIDLSH}, #{TBYEAR}, #{DNSKZGJSS}, #{DNGJJXJS}, #{DNSJJXJS}, #{DNGJKJJS}, #{DNSJKJJS}, #{DNGJJXMS}, #{DNSBXMS}, #{DNZXDK}, #{DNHXDK}, #{GJJJXTDS}, #{GJJKYTDS}, #{SJJXTDS}, #{SJKYTDS}, #{DNSCI}, #{DNSSCI}, #{DNCSSCI}, #{DNEI}, #{DNCSCD}, #{DNISTP}, #{GSPJSS}, #{DNCGFXS}, #{DNZLS}, #{DNRJZZQS})
+</insert>
+<delete id="deleteXYBKTBJSSZSP" parameterType="java.lang.String">
+	  	delete from BKTBJSSZSP where  XYDM= #{XYDM} 
+</delete>
+<delete id="deleteBKTBJSSZSP" parameterType="BKTBJSSZSP">
+	  	delete from BKTBJSSZSP where XXDM= #{XXDM} and XYDM= #{XYDM} and ZYIDLSH= #{ZYIDLSH} and TBYEAR= #{TBYEAR}
+</delete>
+<delete id="deleteBKTBJSSZSPO" parameterType="BKTBJSSZSP">
+	  	delete from BKTBJSSZSP where XXDM= #{XXDM} and XYDM= #{XYDM} and ZYIDLSH= #{ZYIDLSH} 
+</delete>
+<select id="getBKTBJSSZSP" parameterType="BKTBJSSZSP" resultType="BKTBJSSZSP">
+	  SELECT * FROM BKTBJSSZSP WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and ZYIDLSH= #{ZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+ <select id="getBKTBJSSZSPMAP" parameterType="BKTBJSSZSP" resultType="java.util.HashMap">
+	  SELECT * FROM BKTBJSSZSP WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and ZYIDLSH= #{ZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+
+<insert id="insertBKTBZLBZ" parameterType="BKTBZLBZ">
+	insert into BKTBZLBZ(XXDM, XYDM, TBYEAR, BKTBIDLSH, ZYIDLSH, ZLBZBZ,JXJDPJ,JXDDBZ) 
+	values (#{XXDM},#{XYDM},#{TBYEAR}, #{BKTBIDLSH}, #{ZYIDLSH}, #{ZLBZBZ}, #{JXJDPJ}, #{JXDDBZ})
+</insert>
+<delete id="deleteXYBKTBZLBZ" parameterType="java.lang.String">
+	  	delete from BKTBZLBZ where  XYDM= #{XYDM} 
+</delete>
+<delete id="deleteBKTBZLBZ" parameterType="BKTBZLBZ">
+	  	delete from BKTBZLBZ where XXDM= #{XXDM} and XYDM= #{XYDM} and ZYIDLSH= #{ZYIDLSH} and TBYEAR= #{TBYEAR}
+</delete>
+<delete id="deleteBKTBZLBZO" parameterType="BKTBZLBZ">
+	  	delete from BKTBZLBZ where XXDM= #{XXDM} and XYDM= #{XYDM} and ZYIDLSH= #{ZYIDLSH} 
+</delete>
+<select id="getBKTBZLBZ" parameterType="BKTBZLBZ" resultType="BKTBZLBZ">
+	  SELECT * FROM BKTBZLBZ WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and ZYIDLSH= #{ZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+ <select id="getBKTBZLBZMAP" parameterType="BKTBZLBZ" resultType="java.util.HashMap">
+	  SELECT * FROM BKTBZLBZ WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and ZYIDLSH= #{ZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+ 
+<!--   专科专业信息填报 -->
+<insert id="insertZKTBJYJBXX" parameterType="ZKTBJYJBXX">
+	insert into ZKTBJYJBXX(XXDM,ZYBXRQ,SJZHGGBZ,CXFAXMS,SXYLZYBZ,GCRZBZ,XYDM,ZKZYIDLSH,ZKTBLSH,TBYEAR,YSZYLX,XWSYQ) 
+	values (#{XXDM},#{ZYBXRQ},#{SJZHGGBZ},#{CXFAXMS},#{SXYLZYBZ},#{GCRZBZ},#{XYDM},#{ZKZYIDLSH},#{ZKTBLSH},#{TBYEAR},#{YSZYLX},#{XWSYQ})
+</insert>
+<delete id="deleteXYZKTBJYJBXX" parameterType="java.lang.String">
+	  	delete from ZKTBJYJBXX where  XYDM= #{XYDM} 
+</delete>
+<delete id="deleteZKTBJYJBXX" parameterType="ZKTBJYJBXX">
+	  	delete from ZKTBJYJBXX where XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH} and TBYEAR= #{TBYEAR}
+</delete>
+<delete id="deleteZKTBJYJBXXO" parameterType="ZKTBJYJBXX">
+	  	delete from ZKTBJYJBXX where XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH} 
+</delete>
+ <select id="getZKTBJYJBXX" parameterType="ZKTBJYJBXX" resultType="ZKTBJYJBXX">
+	  SELECT * FROM ZKTBJYJBXX WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+  <select id="getZKTBJYJBXXMAP" parameterType="ZKTBJYJBXX" resultType="java.util.HashMap">
+	  SELECT * FROM ZKTBJYJBXX WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+<update id="upZKTBJYJBXX" parameterType="ZKTBJYJBXX" >
+    update ZKTBJYJBXX
+    set 
+      ZYBXRQ = #{ZYBXRQ},
+      SXYLZYBZ = #{SXYLZYBZ},
+      GCRZBZ = #{GCRZBZ},
+      ZKTBLSH = #{ZKTBLSH},
+      SJZHGGBZ = #{SJZHGGBZ},
+      CXFAXMS = #{CXFAXMS},
+      YSZYLX = #{YSZYLX},
+      XWSYQ = #{XWSYQ}
+     WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH} and TBYEAR= #{TBYEAR}
+  </update>	  
+
+<insert id="insertZKTBSYB" parameterType="ZKTBSYB">
+	insert into ZKTBSYB(XXDM, XYDM, ZKZYIDLSH, ZKTBLSH, ZXSRS, JHZSRS,SJZSRS,TBYEAR,ZSZGF,ZSZDF,ZSPJF,ZSZGWC,ZSZDWC,ZSPJWC,ZSZSRS,JNZRS,GATZRS,LXSZRS,SJLQS,ZZZSRS,ZTCSRS) 
+	values (#{XXDM},#{XYDM},#{ZKZYIDLSH},#{ZKTBLSH},#{ZXSRS},#{JHZSRS},#{SJZSRS},#{TBYEAR},#{ZSZGF},#{ZSZDF},#{ZSPJF},#{ZSZGWC},#{ZSZDWC},#{ZSPJWC},#{ZSZSRS},#{JNZRS},#{GATZRS},#{LXSZRS},#{SJLQS},#{ZZZSRS},#{ZTCSRS})
+</insert>
+<delete id="deleteXYZKTBSYB" parameterType="java.lang.String">
+	  	delete from ZKTBSYB where  XYDM= #{XYDM} 
+</delete>
+<delete id="deleteZKTBSYB" parameterType="ZKTBSYB">
+	  	delete from ZKTBSYB where XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH} and TBYEAR= #{TBYEAR}
+</delete>
+<delete id="deleteZKTBSYBO" parameterType="ZKTBSYB">
+	  	delete from ZKTBSYB where XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH} 
+</delete>
+<select id="getZKTBSYB" parameterType="ZKTBSYB" resultType="ZKTBSYB">
+	  SELECT * FROM ZKTBSYB WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+ <select id="getZKTBSYBMAP" parameterType="ZKTBSYB" resultType="java.util.HashMap">
+	  SELECT * FROM ZKTBSYB WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+ <update id="upZKTBSYB" parameterType="ZKTBSYB" >
+   update ZKTBSYB
+    set 
+      ZKTBLSH = #{ZKTBLSH},
+      ZXSRS = #{ZXSRS},
+      JHZSRS = #{JHZSRS},
+      SJZSRS = #{SJZSRS},
+      ZSZGF = #{ZSZGF},
+      ZSZDF = #{ZSZDF},
+      ZSPJF = #{ZSPJF},
+      ZSZGWC = #{ZSZGWC},
+      ZSZDWC = #{ZSZDWC},
+      ZSPJWC = #{ZSPJWC},
+      ZSZSRS = #{ZSZSRS},
+      JNZRS = #{JNZRS},
+      GATZRS = #{GATZRS},
+      LXSZRS = #{LXSZRS},
+      SJLQS = #{SJLQS},
+      ZZZSRS = #{ZZZSRS},
+      ZTCSRS = #{ZTCSRS}
+     WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH} and TBYEAR= #{TBYEAR}
+  </update>	 
+
+<insert id="insertZKTBPYXG" parameterType="ZKTBPYXG">
+	insert into ZKTBPYXG(XXDM, XYDM, ZKZYIDLSH, ZKTBLSH, TBYEAR, GJJNJSCJRS,SXJNJSCJRS,GJJNJSDJS,SXXKJSDJS,SNGJHLWDJS,SNSXHLWDJS,GJDCS,SJDCS,LWS,ZLS,YINGYUA,YINGYUB,SJJLS,JXJS,ZYZSHQL,XJXSGBRS,SJXKJSCJRS,SJXKJSHJRS,WTJSHJRS,GJHYRS,XSRDJJFZ,XSYBDYS,XSZSDYS,XSCJGYHDRS,JCXYRS) 
+	values (#{XXDM},#{XYDM},#{ZKZYIDLSH},#{ZKTBLSH},#{TBYEAR},#{GJJNJSCJRS},#{SXJNJSCJRS},#{GJJNJSDJS},#{SXXKJSDJS},#{SNGJHLWDJS},#{SNSXHLWDJS},#{GJDCS},#{SJDCS},#{LWS},#{ZLS},#{YINGYUA},#{YINGYUB},#{SJJLS},#{JXJS},#{ZYZSHQL},#{XJXSGBRS},#{SJXKJSCJRS},#{SJXKJSHJRS},#{WTJSHJRS},#{GJHYRS},#{XSRDJJFZ},#{XSYBDYS},#{XSZSDYS},#{XSCJGYHDRS},#{JCXYRS})
+</insert>
+<delete id="deleteXYZKTBPYXG" parameterType="java.lang.String">
+	  	delete from ZKTBPYXG where  XYDM= #{XYDM} 
+</delete>
+<delete id="deleteZKTBPYXG" parameterType="ZKTBPYXG">
+	  	delete from ZKTBPYXG where XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH} and TBYEAR= #{TBYEAR}
+</delete>
+<delete id="deleteZKTBPYXGO" parameterType="ZKTBPYXG">
+	  	delete from ZKTBPYXG where XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH}
+</delete>
+<select id="getZKTBPYXG" parameterType="ZKTBPYXG" resultType="ZKTBPYXG">
+	  SELECT * FROM ZKTBPYXG WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+ <select id="getZKTBPYXGMAP" parameterType="ZKTBPYXG" resultType="java.util.HashMap">
+	  SELECT * FROM ZKTBPYXG WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+ <update id="upZKTBPYXG" parameterType="ZKTBPYXG" >
+    update ZKTBPYXG
+    set 
+      ZKTBLSH = #{ZKTBLSH},
+      GJJNJSCJRS = #{GJJNJSCJRS},
+      SXJNJSCJRS = #{SXJNJSCJRS},
+      GJJNJSDJS = #{GJJNJSDJS},
+      SNGJHLWDJS = #{SNGJHLWDJS},
+      GJDCS = #{GJDCS},
+      SJDCS = #{SJDCS},
+      LWS = #{LWS},
+      ZLS = #{ZLS},
+      YINGYUA = #{YINGYUA},
+      YINGYUB = #{YINGYUB},
+      SJJLS = #{SJJLS},
+      JXJS = #{JXJS},
+      SXXKJSDJS = #{SXXKJSDJS},
+      SNSXHLWDJS = #{SNSXHLWDJS},
+      ZYZSHQL = #{ZYZSHQL},
+      XJXSGBRS = #{XJXSGBRS},
+      SJXKJSCJRS = #{SJXKJSCJRS},
+      SJXKJSHJRS = #{SJXKJSHJRS},
+      WTJSHJRS = #{WTJSHJRS},
+      GJHYRS = #{GJHYRS},
+      XSRDJJFZ = #{XSRDJJFZ},
+      XSYBDYS = #{XSYBDYS},
+      XSZSDYS = #{XSZSDYS},
+      XSCJGYHDRS = #{XSCJGYHDRS},
+      JCXYRS= #{JCXYRS}
+     WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH} and TBYEAR= #{TBYEAR}
+  </update>	 
+ 
+
+<insert id="insertZKTBJIUYE" parameterType="ZKTBJIUYE">
+	insert into ZKTBJIUYE(XXDM, XYDM, ZKZYLSH, ZKTBLSH, TBYEAR, BYSCCJYL,BYSMYD,ZZCYRS) 
+	values (#{XXDM},#{XYDM},#{ZKZYLSH}, #{ZKTBLSH}, #{TBYEAR}, #{BYSCCJYL}, #{BYSMYD}, #{ZZCYRS})
+</insert>
+<delete id="deleteXYZKTBJIUYE" parameterType="java.lang.String">
+	  	delete from ZKTBJIUYE where  XYDM= #{XYDM} 
+</delete>
+<delete id="deleteZKTBJIUYE" parameterType="ZKTBJIUYE">
+	  	delete from ZKTBJIUYE where XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYLSH= #{ZKZYLSH} and TBYEAR= #{TBYEAR}
+</delete>
+<delete id="deleteZKTBJIUYEO" parameterType="ZKTBJIUYE">
+	  	delete from ZKTBJIUYE where XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYLSH= #{ZKZYLSH}
+</delete>
+<select id="getZKTBJIUYE" parameterType="ZKTBJIUYE" resultType="ZKTBJIUYE">
+	  SELECT * FROM ZKTBJIUYE WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYLSH= #{ZKZYLSH} and TBYEAR= #{TBYEAR}
+ </select>
+ <select id="getZKTBJIUYEMAP" parameterType="ZKTBJIUYE" resultType="java.util.HashMap">
+	  SELECT * FROM ZKTBJIUYE WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYLSH= #{ZKZYLSH} and TBYEAR= #{TBYEAR}
+ </select>
+
+<insert id="insertZKTBZYXYL" parameterType="ZKTBZYXYL">
+	insert into ZKTBZYXYL(XXDM, XYDM, ZKZYIDLSH, ZKZYTBLSH, TBYEAR, ZRRS,ZCRS,YJSLQRS,JSLXSRS,SCLXSRS) 
+	values (#{XXDM},#{XYDM},#{ZKZYIDLSH}, #{ZKZYTBLSH}, #{TBYEAR}, #{ZRRS}, #{ZCRS}, #{YJSLQRS}, #{JSLXSRS}, #{SCLXSRS})
+</insert>
+<delete id="deleteXYZKTBZYXYL" parameterType="java.lang.String">
+	  	delete from ZKTBZYXYL where  XYDM= #{XYDM} 
+</delete>
+<delete id="deleteZKTBZYXYL" parameterType="ZKTBZYXYL">
+	  	delete from ZKTBZYXYL where XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH} and TBYEAR= #{TBYEAR}
+</delete>
+<delete id="deleteZKTBZYXYLO" parameterType="ZKTBZYXYL">
+	  	delete from ZKTBZYXYL where XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH}
+</delete>
+<select id="getZKTBZYXYL" parameterType="ZKTBZYXYL" resultType="ZKTBZYXYL">
+	  SELECT * FROM ZKTBZYXYL WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+ <select id="getZKTBZYXYLMAP" parameterType="ZKTBZYXYL" resultType="java.util.HashMap">
+	  SELECT * FROM ZKTBZYXYL WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+
+<insert id="insertZKTBPYFA" parameterType="ZKTBPYFA">
+	insert into ZKTBPYFA(XXDM, XYDM, ZKZYIDLSH, ZKTBIDLSH, TBYEAR, BYXFZS,LLXFZS,XXKXFZS,PYFAURL,SJKXFZS,CXXFZS,PYFAXDNF) 
+	values (#{XXDM},#{XYDM},#{ZKZYIDLSH}, #{ZKTBIDLSH}, #{TBYEAR}, #{BYXFZS}, #{LLXFZS}, #{XXKXFZS}, #{PYFAURL}, #{SJKXFZS}, #{CXXFZS}, #{PYFAXDNF})
+</insert>
+<delete id="deleteXYZKTBPYFA" parameterType="java.lang.String">
+	  	delete from ZKTBPYFA where  XYDM= #{XYDM} 
+</delete>
+<delete id="deleteZKTBPYFA" parameterType="ZKTBPYFA">
+	  	delete from ZKTBPYFA where XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH} and TBYEAR= #{TBYEAR}
+</delete>
+<delete id="deleteZKTBPYFAO" parameterType="ZKTBPYFA">
+	  	delete from ZKTBPYFA where XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH} 
+</delete>
+<select id="getZKTBPYFA" parameterType="ZKTBPYFA" resultType="ZKTBPYFA">
+	  SELECT * FROM ZKTBPYFA WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+ <select id="getZKTBPYFAMAP" parameterType="ZKTBPYFA" resultType="java.util.HashMap">
+	  SELECT * FROM ZKTBPYFA WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+  <update id="upZKTBPYFA" parameterType="ZKTBPYFA" >
+   update ZKTBPYFA
+    set 
+      ZKTBIDLSH = #{ZKTBIDLSH},
+      BYXFZS = #{BYXFZS},
+      LLXFZS = #{LLXFZS},
+      XXKXFZS = #{XXKXFZS},
+      PYFAURL = #{PYFAURL},
+      SJKXFZS = #{SJKXFZS},
+      CXXFZS = #{CXXFZS},
+      PYFAXDNF = #{PYFAXDNF}
+     WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH} and TBYEAR= #{TBYEAR}
+  </update>	 
+  
+
+<insert id="insertZKTBJIAOSHI" parameterType="ZKTBJIAOSHI">
+	insert into ZKTBJIAOSHI(XXDM, XYDM, ZKTBIDLSH, ZKZYIDLSH, JSZS, ZGJSZS,FGJSZS,WPJSZS,YOUNGJSZS, MEDIANJSZS,BSJSZS,SYJSZS,TBYEAR) 
+	values (#{XXDM},#{XYDM},#{ZKTBIDLSH}, #{ZKZYIDLSH}, #{JSZS}, #{ZGJSZS}, #{FGJSZS}, #{WPJSZS}, #{YOUNGJSZS}, #{MEDIANJSZS}, #{BSJSZS}, #{SYJSZS}, #{TBYEAR})
+</insert>
+<delete id="deleteXYZKTBJIAOSHI" parameterType="java.lang.String">
+	  	delete from ZKTBJIAOSHI where  XYDM= #{XYDM} 
+</delete>
+<delete id="deleteZKTBJIAOSHI" parameterType="ZKTBJIAOSHI">
+	  	delete from ZKTBJIAOSHI where XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH} and TBYEAR= #{TBYEAR}
+</delete>
+<delete id="deleteZKTBJIAOSHIO" parameterType="ZKTBJIAOSHI">
+	  	delete from ZKTBJIAOSHI where XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH}
+</delete>
+<select id="getZKTBJIAOSHI" parameterType="ZKTBJIAOSHI" resultType="ZKTBJIAOSHI">
+	  SELECT * FROM ZKTBJIAOSHI WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+ <select id="getZKTBJIAOSHIMAP" parameterType="ZKTBJIAOSHI" resultType="java.util.HashMap">
+	  SELECT * FROM ZKTBJIAOSHI WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+
+<insert id="insertZKTBJXTJ" parameterType="ZKTBJXTJ">
+	insert into ZKTBJXTJ(XXDM, XYDM, ZKZYIDLSH, ZKZYTBLSH, TBYEAR, ZSBF,ZRJF,DNSBF,DNRJF, ZYTUSHU,DNJXJF) 
+	values (#{XXDM},#{XYDM},#{ZKZYIDLSH}, #{ZKZYTBLSH}, #{TBYEAR}, #{ZSBF}, #{ZRJF}, #{DNSBF}, #{DNRJF}, #{ZYTUSHU}, #{DNJXJF})
+</insert>
+<delete id="deleteXYZKTBJXTJ" parameterType="java.lang.String">
+	  	delete from ZKTBJXTJ where  XYDM= #{XYDM} 
+</delete>
+<delete id="deleteZKTBJXTJ" parameterType="ZKTBJXTJ">
+	  	delete from ZKTBJXTJ where XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH} and TBYEAR= #{TBYEAR}
+</delete>
+<delete id="deleteZKTBJXTJO" parameterType="ZKTBJXTJ">
+	  	delete from ZKTBJXTJ where XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH}
+</delete>
+<select id="getZKTBJXTJ" parameterType="ZKTBJXTJ" resultType="ZKTBJXTJ">
+	  SELECT * FROM ZKTBJXTJ WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+ <select id="getZKTBJXTJMAP" parameterType="ZKTBJXTJ" resultType="java.util.HashMap">
+	  SELECT * FROM ZKTBJXTJ WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+
+<insert id="insertZKTBSJJX" parameterType="ZKTBSJJX">
+	insert into ZKTBSJJX(XXDM, XYDM, ZKZYIDLSH , ZKZYTBLSH, TBYEAR, SJJXJF,XNSXJD,XWSXJD,BYLWBL, DNDDBXSS,DNXDXTS,GJJXNZSS,SJXNZSS,GJJSYSS,SJSYSS,XQLHPYXYS,GJJSCSXJDS,SJSCSXJDS) 
+	values (#{XXDM},#{XYDM},#{ZKZYIDLSH}, #{ZKZYTBLSH}, #{TBYEAR}, #{SJJXJF}, #{XNSXJD}, #{XWSXJD}, #{BYLWBL}, #{DNDDBXSS}, #{DNXDXTS}, #{GJJXNZSS}, #{SJXNZSS}, #{GJJSYSS}, #{SJSYSS}, #{XQLHPYXYS}, #{GJJSCSXJDS}, #{SJSCSXJDS})
+</insert>
+<delete id="deleteXYZKTBSJJX" parameterType="java.lang.String">
+	  	delete from ZKTBSJJX where  XYDM= #{XYDM} 
+</delete>
+<delete id="deleteZKTBSJJX" parameterType="ZKTBSJJX">
+	  	delete from ZKTBSJJX where XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH} and TBYEAR= #{TBYEAR}
+</delete>
+<delete id="deleteZKTBSJJXO" parameterType="ZKTBSJJX">
+	  	delete from ZKTBSJJX where XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH}
+</delete>
+<select id="getZKTBSJJX" parameterType="ZKTBSJJX" resultType="ZKTBSJJX">
+	  SELECT * FROM ZKTBSJJX WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+ <select id="getZKTBSJJXMAP" parameterType="ZKTBSJJX" resultType="java.util.HashMap">
+	  SELECT * FROM ZKTBSJJX WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+
+<insert id="insertZKTBCXCY" parameterType="ZKTBCXCY">
+	insert into ZKTBCXCY(XXDM, XYDM, ZYIDLSH, ZKTBLSH, TBYEAR, TXSZBZ,CYKCBZ,CYZDJSRS,GZRS) 
+	values (#{XXDM},#{XYDM},#{ZYIDLSH}, #{ZKTBLSH}, #{TBYEAR}, #{TXSZBZ}, #{CYKCBZ}, #{CYZDJSRS}, #{GZRS})
+</insert>
+<delete id="deleteXYZKTBCXCY" parameterType="java.lang.String">
+	  	delete from ZKTBCXCY where  XYDM= #{XYDM} 
+</delete>
+<delete id="deleteZKTBCXCY" parameterType="ZKTBCXCY">
+	  	delete from ZKTBCXCY where XXDM= #{XXDM} and XYDM= #{XYDM} and ZYIDLSH= #{ZYIDLSH} and TBYEAR= #{TBYEAR}
+</delete>
+<delete id="deleteZKTBCXCYO" parameterType="ZKTBCXCY">
+	  	delete from ZKTBCXCY where XXDM= #{XXDM} and XYDM= #{XYDM} and ZYIDLSH= #{ZYIDLSH}
+</delete>
+<select id="getZKTBCXCY" parameterType="ZKTBCXCY" resultType="ZKTBCXCY">
+	  SELECT * FROM ZKTBCXCY WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and ZYIDLSH= #{ZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+ <select id="getZKTBCXCYMAP" parameterType="ZKTBCXCY" resultType="java.util.HashMap">
+	  SELECT * FROM ZKTBCXCY WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and ZYIDLSH= #{ZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+ 
+
+<insert id="insertZKTBJXGG" parameterType="ZKTBJXGG">
+	insert into ZKTBJXGG(XXDM, XYDM, ZKTBIDLSH, ZKZYIDLSH, DNSJJXYJS, DNSJJPKCS,DNGJJJPKCS,DNSJJXCGJS,SJRCPYSYCS, DNJGLWS,DNGJJJCS,DNSJYXJCS,DNQTJCS,TBYEAR,DNGJJJXCGJ,DNSJJJXCGJ,GJJJXZYKBZ,SJJXZYKBZ) 
+	values (#{XXDM},#{XYDM},#{ZKTBIDLSH}, #{ZKZYIDLSH}, #{DNSJJXYJS}, #{DNSJJPKCS}, #{DNGJJJPKCS}, #{DNSJJXCGJS}, #{SJRCPYSYCS}, #{DNJGLWS}, #{DNGJJJCS}, #{DNSJYXJCS}, #{DNQTJCS}, #{TBYEAR}, #{DNGJJJXCGJ}, #{DNSJJJXCGJ}, #{GJJJXZYKBZ}, #{SJJXZYKBZ})
+</insert>
+<delete id="deleteXYZKTBJXGG" parameterType="java.lang.String">
+	  	delete from ZKTBJXGG where  XYDM= #{XYDM} 
+</delete>
+<delete id="deleteZKTBJXGG" parameterType="ZKTBJXGG">
+	  	delete from ZKTBJXGG where XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH} and TBYEAR= #{TBYEAR}
+</delete>
+<delete id="deleteZKTBJXGGO" parameterType="ZKTBJXGG">
+	  	delete from ZKTBJXGG where XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH} 
+</delete>
+<select id="getZKTBJXGG" parameterType="ZKTBJXGG" resultType="ZKTBJXGG">
+	  SELECT * FROM ZKTBJXGG WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+ <select id="getZKTBJXGGMAP" parameterType="ZKTBJXGG" resultType="java.util.HashMap">
+	  SELECT * FROM ZKTBJXGG WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+
+<insert id="insertZKTBJSSZSP" parameterType="ZKTBJSSZSP">
+	insert into ZKTBJSSZSP(XXDM, XYDM, ZKTBIDLSH, ZKZYIDLSH, TBYEAR, DNSKZGJSS,DNGJJXJS,DNSJJXJS,DNGJKJJS, DNSJKJJS,DNGJJXMS,DNSBXMS,DNZXDK,DNHXDK,GJJJXTDS,GJJKYTDS,SJJXTDS,SJKYTDS,DNSCI,DNSSCI,DNCSSCI,DNEI,DNCSCD,DNISTP,GSPJSS,DNCGFXS,DNZLS,DNRJZZQS) 
+	values (#{XXDM},#{XYDM},#{ZKTBIDLSH}, #{ZKZYIDLSH}, #{TBYEAR}, #{DNSKZGJSS}, #{DNGJJXJS}, #{DNSJJXJS}, #{DNGJKJJS}, #{DNSJKJJS}, #{DNGJJXMS}, #{DNSBXMS}, #{DNZXDK}, #{DNHXDK}, #{GJJJXTDS}, #{GJJKYTDS}, #{SJJXTDS}, #{SJKYTDS}, #{DNSCI}, #{DNSSCI}, #{DNCSSCI}, #{DNEI}, #{DNCSCD}, #{DNISTP}, #{GSPJSS}, #{DNCGFXS}, #{DNZLS}, #{DNRJZZQS})
+</insert>
+<delete id="deleteXYZKTBJSSZSP" parameterType="java.lang.String">
+	  	delete from ZKTBJSSZSP where  XYDM= #{XYDM} 
+</delete>
+<delete id="deleteZKTBJSSZSP" parameterType="ZKTBJSSZSP">
+	  	delete from ZKTBJSSZSP where XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH} and TBYEAR= #{TBYEAR}
+</delete>
+<delete id="deleteZKTBJSSZSPO" parameterType="ZKTBJSSZSP">
+	  	delete from ZKTBJSSZSP where XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH}
+</delete>
+<select id="getZKTBJSSZSP" parameterType="ZKTBJSSZSP" resultType="ZKTBJSSZSP">
+	  SELECT * FROM ZKTBJSSZSP WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+ <select id="getZKTBJSSZSPMAP" parameterType="ZKTBJSSZSP" resultType="java.util.HashMap">
+	  SELECT * FROM ZKTBJSSZSP WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+
+<insert id="insertZKTBZLBZ" parameterType="ZKTBZLBZ">
+	insert into ZKTBZLBZ(XXDM, XYDM, TBYEAR, ZKTBIDLSH, ZKZYIDLSH, ZLBZBZ,JXJDPJ,JXDDBZ) 
+	values (#{XXDM},#{XYDM},#{TBYEAR}, #{ZKTBIDLSH}, #{ZKZYIDLSH}, #{ZLBZBZ}, #{JXJDPJ}, #{JXDDBZ})
+</insert>
+<delete id="deleteXYZKTBZLBZ" parameterType="java.lang.String">
+	  	delete from ZKTBZLBZ where  XYDM= #{XYDM} 
+</delete>
+<delete id="deleteZKTBZLBZ" parameterType="ZKTBZLBZ">
+	  	delete from ZKTBZLBZ where XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH} and TBYEAR= #{TBYEAR}
+</delete>
+<delete id="deleteZKTBZLBZO" parameterType="ZKTBZLBZ">
+	  	delete from ZKTBZLBZ where XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH} 
+</delete>
+<select id="getZKTBZLBZ" parameterType="ZKTBZLBZ" resultType="ZKTBZLBZ">
+	  SELECT * FROM ZKTBZLBZ WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+ <select id="getZKTBZLBZMAP" parameterType="ZKTBZLBZ" resultType="java.util.HashMap">
+	  SELECT * FROM ZKTBZLBZ WHERE XXDM= #{XXDM} and XYDM= #{XYDM} and ZKZYIDLSH= #{ZKZYIDLSH} and TBYEAR= #{TBYEAR}
+ </select>
+
+	<!--   专业管理 -->
+		<insert id="insertZYpz" parameterType="Zypz">
+	  	insert into CZYZYPZB(zydilsh, xydm, zylb, xxdm, czydm, czylb) values (#{zydilsh},#{xydm},#{zylb}, #{xxdm}, #{czydm}, #{czylb})
+	  </insert>
+	  <delete id="deleteZYpz" parameterType="java.lang.String">
+	  	delete from CZYZYPZB where czydm= #{value}
+	  </delete>
+	  <select id="getZYpzxx" parameterType="java.lang.String" resultType="Zypz">
+	  SELECT * FROM CZYZYPZB WHERE CZYDM = #{value} 
+	  </select>
+	   <select id="getZYpzxxone" parameterType="Zypz" resultType="Zypz">
+	  SELECT * FROM CZYZYPZB WHERE  xydm= #{xydm} and xxdm= #{xxdm} and zydilsh= #{zydilsh}
+	  </select>
+	   <delete id="deleteXYzy" parameterType="java.lang.String">
+	  	delete from CZYZYPZB where xydm= #{value}
+	  </delete>
+   <delete id="deleteXYzyone" parameterType="Zypz">
+	  	delete from CZYZYPZB where xydm= #{xydm} and xxdm= #{xxdm} and zydilsh= #{zydilsh}
+	  </delete>
+  <!-- 操作人员管理 --> 
+	  <select id="getCzys" resultType="Czy">
+　　select * from CZYXXB where czylb in
+　　<foreach item="item" index="index" collection="list" open="(" separator="," close=")">  
+　　　　#{item}  
+　　</foreach>  
+	</select>
+	
+	<select id="getXYCzys" resultType ="Czy" parameterType="map">
+		select * from CZYXXB where xydm = #{xydm} and czylb in 
+	<foreach item="item" index="index" collection="list" open="(" separator="," close=")">  
+　　　　#{item}  
+　　</foreach>  
+</select>
+
+	<insert id="insertCzy" parameterType="Czy">
+	  	insert into CZYXXB(xxdm, czyzgh, czykl, czyxm, czylb, lxdh) values (#{xxdm},#{czyzgh},#{czykl}, #{czyxm}, #{czylb}, #{lxdh})
+	  </insert>
+	  <insert id="insertCzyxy" parameterType="Czy">
+	  	insert into CZYXXB(xxdm, czyzgh, czykl, czyxm, czylb, lxdh,xydm) values (#{xxdm},#{czyzgh},#{czykl}, #{czyxm}, #{czylb}, #{lxdh},#{xydm})
+	  </insert>
+	  <select id="getAllxxm"  resultType="Xxm">
+	  SELECT * FROM XXXXB 
+	  </select>
+	  <delete id="deleteCzy" parameterType="java.lang.String">
+	  	delete from CZYXXB where czyzgh= #{value}
+	  </delete>
+	   <delete id="deleteXYCzy" parameterType="java.lang.String">
+	  	delete from CZYXXB where xydm= #{value}
+	  </delete>
+	  <update id="upCzy" parameterType="Czy" >
+	    update CZYXXB set czyxm = #{czyxm},lxdh = #{lxdh} WHERE czyzgh = #{czyzgh}
+	  </update>
+	  <update id="upMima" parameterType="Czy" >
+	    update CZYXXB set czykl = #{czykl} WHERE czyzgh = #{czyzgh}
+	  </update>
+<!-- 	  学院专业管理 -->
+	  <insert id="insertXYZYPZB" parameterType="XYZYPZB">
+	  	insert into XYZYPZB(xxdm, zylb, zyidxlsh ,xydm) values (#{xxdm},#{zylb},#{zyidxlsh},#{xydm})
+	  </insert>
+	  <select id="getXYZYPZB" parameterType="java.lang.String" resultType="XYZYPZB">
+	  SELECT * FROM XYZYPZB WHERE xxdm = #{value} ORDER  BY xydm ,zylb 
+	  </select>
+	  <delete id="deleteXYZYPZB" parameterType="XYZYPZB">
+	  	delete from XYZYPZB where zyidxlsh= #{zyidxlsh} and xxdm= #{xxdm} and xydm=#{xydm}
+	  </delete>
+	  <delete id="deleteXY" parameterType="java.lang.String">
+	  	delete from XYZYPZB where xydm=#{value}
+	  </delete>
+	    <select id="getXYzyxm" parameterType="java.lang.String" resultType="XYZYPZB">
+	  SELECT * FROM XYZYPZB WHERE xydm = #{xydm} and zylb = #{zylb}
+	  </select>
+  
+  
+		<!-- 用户登录 -->
+	  <select id="getCzy" parameterType="java.lang.String" resultType="Czy">
+	  SELECT * FROM CZYXXB WHERE CZYZGH = #{value} 
+	  </select>
+	  <select id="getXxm" parameterType="java.lang.String" resultType="Xxm">
+	  SELECT * FROM XXXXB WHERE XXDM = #{value} 
+	  </select>
+<!-- 	  高职专业三级查询 -->
+	  <select id="getYijmc" resultType="Gzzy">
+	  select distinct(yijmc),YIJIDM from gzzyxxb order by YIJIDM
+	  </select>
+	   <select id="getErjmc" parameterType="java.lang.String" resultType="Gzzy">
+	  select distinct(erjmc),ERJIDM from gzzyxxb WHERE yijidm = #{value} order by ERJIDM
+	  </select>
+	  <select id="getSanjmc" parameterType="java.lang.String" resultType="Gzzy">
+	  select distinct(sanjmc),SANJDM,zyidlsh from gzzyxxb WHERE erjidm = #{value} order by SANJDM
+	  </select>
+	  <select id="getZyidlsh" parameterType="java.lang.String" resultType="Gzzy">
+	  select * from gzzyxxb WHERE zyidlsh = #{value}
+	  </select>
+	  <!-- 	  本科专业三级查询 -->
+	  <select id="getYijmcb" resultType="Bkzy">
+	  select distinct(yijimc),YIJIDM from bkzyxxb order by YIJIDM
+	  </select>
+	   <select id="getErjmcb" parameterType="java.lang.String" resultType="Bkzy">
+	  select distinct(erjdmmc),erjidm from bkzyxxb WHERE yijidm = #{value} order by ERJIDM
+	  </select>
+	  <select id="getSanjmcb" parameterType="java.lang.String" resultType="Bkzy">
+	  select distinct(sanjmc),zyidlsh,sanjidm from bkzyxxb WHERE erjidm = #{value} order by sanjidm
+	  </select>
+	  <select id="getZyidlshb" parameterType="java.lang.String" resultType="Bkzy">
+	  select * from bkzyxxb WHERE zyidlsh = #{value}
+	  </select>
+	<!-- 		系统表 -->
+	  <select id="getCsb" resultType="Csb">
+	  select * from XTCSB
+	  </select>	  
+	  <update id="upXylh" parameterType="java.lang.String">
+	  update XTCSB set YXSBXLH =  #{value} 
+	  </update>
+	    <update id="upXyid" parameterType="java.lang.String">
+	  update XTCSB set XYID =  #{value} 
+	  </update>
+	    <update id="upCzyxlh" parameterType="java.lang.String">
+	  update XTCSB set CZYXLH =  #{value} 
+	  </update>
+	 <update id="upTbLSH" parameterType="java.lang.String">
+	  update XTCSB set BKTBLSH =  #{value} 
+	  </update>
+	   <update id="upZKTbLSH" parameterType="java.lang.String">
+	  update XTCSB set ZKTBLSH =  #{value} 
+	  </update>
+
+	  <!-- 	  学院信息 -->
+	  <insert id="insertXyxx" parameterType="Xyxx">
+	  	insert into YXSBZXB(xymc, xydm, chenlinian, lxr, lxrdh, xxdm) values (#{xymc},#{xydm},#{chenlinian}, #{lxr}, #{lxrdh}, #{xxdm})
+	  </insert>
+	  <select id="getXyxx" parameterType="java.lang.String" resultType="Xyxx">
+	  select * from YXSBZXB WHERE XXDM = #{value}
+	  </select>
+	   <update id="upXyxx" parameterType="Xyxx" >
+	    update YXSBZXB set xymc = #{xymc},chenlinian = #{chenlinian}, lxr = #{lxr},lxrdh = #{lxrdh} where xydm = #{xydm}
+	  </update>
+	  <delete id="deleteXyxx" parameterType="java.lang.String">
+	  	delete from YXSBZXB where xydm= #{xydm}
+	  </delete>
+	  <select id="getXyxm" parameterType="java.lang.String" resultType="Xyxx">
+	  select * from YXSBZXB WHERE XYDM = #{value}
+	  </select>
+	  
+	  
+	  
+	   <insert id="insertZymc" parameterType="Zymc">
+	  	insert into WUAO1(ZYMC) values (#{zymc})
+	  </insert>
+	  
+	   <insert id="insertZymc1" parameterType="Zymc">
+	  	insert into WUAO2(ZYMC1) values (#{zymc})
+	  </insert>
+	  
+	  <insert id="insertZymc2" parameterType="Zymc">
+	  	insert into WUAO3(ZYMC2) values (#{zymc})
+	  </insert>
+
+	  <insert id="insertZymc3" parameterType="Zymc">
+	  	insert into WUAO4(ZYMC3) values (#{zymc})
+	  </insert>
+ 
+  </mapper> 
+    
